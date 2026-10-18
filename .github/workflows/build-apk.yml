@@ -38,12 +38,12 @@ jobs:
           KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
           if [ "$HAS_RELEASE_KEY" = "true" ]; then
-            cat >> android/app/build.gradle <<'GRADLE'
-            android {
-              signingConfigs { release { storeFile file('release.keystore'); storePassword System.getenv('STORE_PASSWORD'); keyAlias System.getenv('KEY_ALIAS'); keyPassword System.getenv('KEY_PASSWORD') } }
-              buildTypes { release { signingConfig signingConfigs.release } }
-            }
-            GRADLE
+            {
+              echo 'android {'
+              echo "  signingConfigs { release { storeFile file('release.keystore'); storePassword System.getenv('STORE_PASSWORD'); keyAlias System.getenv('KEY_ALIAS'); keyPassword System.getenv('KEY_PASSWORD') } }"
+              echo '  buildTypes { release { signingConfig signingConfigs.release } }'
+              echo '}'
+            } >> android/app/build.gradle
             cd android && ./gradlew assembleRelease
           else
             cd android && ./gradlew assembleDebug
